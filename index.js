@@ -30,7 +30,7 @@ window.addEventListener("load", () => {
                 // Move ship right
                 break;
             case "ArrowLeft":
-                // Move ship right
+                // Move ship left
                 break;
             default:
                 break;
