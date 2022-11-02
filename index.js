@@ -17,14 +17,20 @@ window.addEventListener("load", () => {
     console.log("Game Started!!!, Hope you enjoy this :)");
    
     window.addEventListener("keydown", (event) => {
-        console.log(event.key);
+        // console.log(event.key);
         switch (event.key) {
             // start game case
             case "Enter":
                 Game.currentScene = "play";
                 break;
             case " ":
-                // send bullet code
+                // shoot bullet
+                break;
+            case "ArrowRight":
+                // Move ship right
+                break;
+            case "ArrowLeft":
+                // Move ship right
                 break;
             default:
                 break;
