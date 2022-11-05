@@ -91,6 +91,27 @@ Game.createLevels = function () {
         );
     }
 
+    startScene.addObject("message", new Message(
+        "Press ENTER to play",
+        {x : WIDTH / 2, y: HEIGHT/2 + 50},
+        "15px game-font",
+        "white"
+    ))
+
+    startScene.addObject("message", new Message(
+        "Use <- and -> to move, SPACEBAR to fire",
+        {x : WIDTH / 2, y: HEIGHT/2 + 110},
+        "15px game-font",
+        "white"
+    ))
+
+    startScene.addObject("message", new Message(
+        "Press ESCAPE to pause",
+        {x : WIDTH / 2, y: HEIGHT/2 + 80},
+        "15px game-font",
+        "white"
+    ))
+
     startScene.update = function () {
         this.objects["star"].forEach((star) => {
             star.position.y += 1;
@@ -107,7 +128,10 @@ Game.createLevels = function () {
     let playScene = new Scene();
 
     // added stars background
-    playScene.objects = startScene.objects;
+    playScene.objects = {
+        background : startScene.objects["background"],
+        star : startScene.objects["star"], 
+    };
 
     playScene.addImage(
         "ship",

@@ -142,3 +142,19 @@ class Rect {
         );
     }
 }
+
+class Message{
+    constructor(text, position, font, color){
+        this.text = text;
+        this.font = font;
+        this.color = color;
+        this.position = position;
+    }
+
+    draw(){
+        Game.ctx.font = this.font;
+        Game.ctx.textAlign = "center";
+        Game.ctx.fillStyle = this.color;
+        Game.ctx.fillText(this.text, this.position.x, this.position.y);
+    }
+}

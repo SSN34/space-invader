@@ -6,6 +6,11 @@ body{
     background-color: black;
 }
 
+@font-face {
+    font-family: "game-font";
+    src: url(public/game_font.ttf);
+}
+
 #title{
     background-color: brown;
     color: antiquewhite;
