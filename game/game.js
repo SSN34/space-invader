@@ -36,7 +36,7 @@ Game.init = function (context) {
 };
 
 Game.load = function () {
-    ["images/title.png"].forEach((src) => {
+    ["images/title.png", "images/ship.png"].forEach((src, i) => {
         let image = new Image();
         image.src = src;
 
@@ -50,11 +50,31 @@ Game.createLevels = function () {
 
     // add image in order of FIFO
     startScene.addImage(
-        new CtxImage(Game.images["title"], {
-            x: (WIDTH - Game.images["title"].width) / 2,
-            y: -50,
-        }, true)
+        "title",
+        new CtxImage(
+            Game.images["title"],
+            {
+                x: (WIDTH - Game.images["title"].width) / 2,
+                y: -50,
+            },
+            true
+        )
     );
+
+    startScene.addImage(
+        "ship",
+        new Ship(
+            Game.images["ship"],
+            {
+                x: (WIDTH - Game.images["ship"].width / 3) / 2,
+                y: HEIGHT - 80,
+            },
+            false,
+            3,
+            10
+        )
+    );
+
     startScene.addObject(
         "background",
         new Rect({ x: 0, y: 0 }, WIDTH, HEIGHT, "black")
@@ -66,7 +86,7 @@ Game.createLevels = function () {
                 { x: Math.random() * WIDTH, y: Math.random() * HEIGHT },
                 Math.random() * 3,
                 Math.random() * 3,
-                starColors[Math.floor(Math.random() * 19)],
+                starColors[Math.floor(Math.random() * 19)]
             )
         );
     }
@@ -80,7 +100,6 @@ Game.createLevels = function () {
                 star.position.y = 0;
             }
         });
-
     };
     Game.scenes["start"] = startScene;
 
@@ -89,11 +108,24 @@ Game.createLevels = function () {
 
     // added stars background
     playScene.objects = startScene.objects;
-    
+
+    playScene.addImage(
+        "ship",
+        new Ship(
+            Game.images["ship"],
+            {
+                x: (WIDTH - Game.images["ship"].width / 3) / 2,
+                y: HEIGHT - 80,
+            },
+            false,
+            3,
+            10
+        )
+    );
     // add some object for life
-    
+
     // add alien objects to this scene
-    
+
     // add spaceship object to the scene
 
     // add to this update function to move the respective objects present in play scene
@@ -107,8 +139,15 @@ Game.createLevels = function () {
                 star.position.y = 0;
             }
         });
-    };
 
+        for (let b = this.objects["bullet"]?.length - 1; b >= 0; b--) {
+            this.objects["bullet"][b].position.y -= 5;
+
+            if(this.objects["bullet"][b].position.y < 0){
+                this.objects["bullet"].splice(b, 1);
+            }
+        }
+    };
 
     Game.scenes["play"] = playScene;
 };
