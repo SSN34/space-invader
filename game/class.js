@@ -40,7 +40,7 @@ class Scene {
 
 class CtxImage {
     constructor(image, position, shakeImage, spriteFrames = 1, spriteFPS = 10) {
-        this.speedX = 10;
+
         this.image = image;
         this.position = position;
         this.shakeImage = shakeImage;
@@ -110,9 +110,11 @@ class CtxImage {
 class Ship extends CtxImage{
     constructor(image, position, shakeImage, spriteFrames, spriteFPS) {
         super(image, position, shakeImage, spriteFrames, spriteFPS);
+        this.speedX = 5;
     }
 
-    updateMovementDirection(direction){
+    updateMovementDirection(){
+        let direction = KeysPressed.ArrowRight ? 1 : KeysPressed.ArrowLeft ? -1 : 0;
         let bounds = this.position.x + this.speedX * direction;
         if(bounds >= 0 && bounds + this.frameWidth <= WIDTH){
             this.position.x += this.speedX * direction;

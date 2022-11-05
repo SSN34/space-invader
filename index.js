@@ -10,6 +10,11 @@ Game.init(canvas.getContext("2d"));
 
 Game.load();
 
+let KeysPressed = {
+    ArrowRight: false,
+    ArrowLeft: false,
+};
+
 window.addEventListener("load", () => {
     Game.createLevels();
 
@@ -26,6 +31,7 @@ window.addEventListener("load", () => {
                 Game.currentScene = "play";
                 Game.scenes[Game.currentScene].init();
                 window.addEventListener("keydown", addEventListnerForShip);
+                window.addEventListener("keyup", addEventListnerForShipKeyUp);
                 break;
             case "Escape":
                 Game.scenes[Game.currentScene].clear();
@@ -34,6 +40,11 @@ window.addEventListener("load", () => {
                 window.removeEventListener(
                     "keydown",
                     addEventListnerForShip,
+                    false
+                );
+                window.removeEventListener(
+                    "keyup",
+                    addEventListnerForShipKeyUp,
                     false
                 );
                 break;
@@ -53,20 +64,48 @@ function run() {
 function addEventListnerForShip(e) {
     switch (e.key) {
         case " ":
-            Game.scenes[Game.currentScene].addObject("bullet", new Rect({
-                x: Game.scenes[Game.currentScene].images["ship"].position.x + Game.scenes[Game.currentScene].images["ship"].frameWidth / 2 - 1,
-                y: Game.scenes[Game.currentScene].images["ship"].position.y,
-            }, 2, 10, "white"));
+
+            if (Game.currentScene == "play" &&  Game.scenes[Game.currentScene].objects["bullet"]?.length >= 5) {
+                break;
+            }
+            Game.scenes[Game.currentScene].addObject(
+                "bullet",
+                new Rect(
+                    {
+                        x:
+                            Game.scenes[Game.currentScene].images["ship"]
+                                .position.x +
+                            Game.scenes[Game.currentScene].images["ship"]
+                                .frameWidth /
+                                2 -
+                            1,
+                        y: Game.scenes[Game.currentScene].images["ship"]
+                            .position.y,
+                    },
+                    2,
+                    10,
+                    "white"
+                )
+            );
             break;
         case "ArrowRight":
-            Game.scenes[Game.currentScene].images[
-                "ship"
-            ].updateMovementDirection(1);
+            KeysPressed.ArrowRight = true;
             break;
         case "ArrowLeft":
-            Game.scenes[Game.currentScene].images[
-                "ship"
-            ].updateMovementDirection(-1);
+            KeysPressed.ArrowLeft = true;
+            break;
+        default:
+            break;
+    }
+}
+
+function addEventListnerForShipKeyUp(e) {
+    switch (e.key) {
+        case "ArrowRight":
+            KeysPressed.ArrowRight = false;
+            break;
+        case "ArrowLeft":
+            KeysPressed.ArrowLeft = false;
             break;
         default:
             break;

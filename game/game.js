@@ -140,6 +140,8 @@ Game.createLevels = function () {
             }
         });
 
+        this.images["ship"].updateMovementDirection();
+
         for (let b = this.objects["bullet"]?.length - 1; b >= 0; b--) {
             this.objects["bullet"][b].position.y -= 5;
 
