@@ -287,7 +287,7 @@ Game.createLevels = function () {
             let collision = false;
             if(hasCollided(this.objects["bomb"][b], this.images["ship"][0])){
                 this.objects["life"][0].text = ` x ${--Game.life}`;
-                Game.audios["hit"].play();
+                Game.audios["hit"].cloneNode().play();
                 this.addImage(
                     "explosion",
                     new CtxImage(
