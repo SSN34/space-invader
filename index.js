@@ -73,13 +73,13 @@ function addEventListnerForShip(e) {
                 new Rect(
                     {
                         x:
-                            Game.scenes[Game.currentScene].images["ship"]
+                            Game.scenes[Game.currentScene].images["ship"][0]
                                 .position.x +
-                            Game.scenes[Game.currentScene].images["ship"]
+                            Game.scenes[Game.currentScene].images["ship"][0]
                                 .frameWidth /
                                 2 -
                             1,
-                        y: Game.scenes[Game.currentScene].images["ship"]
+                        y: Game.scenes[Game.currentScene].images["ship"][0]
                             .position.y,
                     },
                     2,

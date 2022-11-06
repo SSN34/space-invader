@@ -12,17 +12,25 @@ class Scene {
         }
     }
     addImage(imageName, imageObj) {
-        this.images[imageName] = imageObj;
+        if (imageName in this.images) {
+            this.images[imageName].push(imageObj);
+        } else {
+            this.images[imageName] = [imageObj];
+        }
     }
     update() {}
-    init(){
-        Object.values(this.images).forEach((image) => {
-            image.init();
+    init() {
+        Object.values(this.images).forEach((eachImageGrp) => {
+            eachImageGrp.forEach((image) => {
+                image.init();
+            });
         });
     }
-    clear(){
-        Object.values(this.images).forEach((image) => {
-            image.clear();
+    clear() {
+        Object.values(this.images).forEach((eachImageGrp) => {
+            eachImageGrp.forEach((image) => {
+                image.clear();
+            });
         });
     }
     draw() {
@@ -32,17 +40,26 @@ class Scene {
             });
         });
 
-        Object.values(this.images).forEach((image) => {
-            image.draw();
+        Object.values(this.images).forEach((eachImageGrp) => {
+            eachImageGrp.forEach((image) => {
+                image.draw();
+            });
         });
     }
 }
 
 class CtxImage {
-    constructor(image, position, shakeImage, spriteFrames = 1, spriteFPS = 10) {
-
+    constructor(
+        image,
+        position,
+        shakeImage,
+        spriteFrames = 1,
+        spriteFPS = 10,
+        scale = 1
+    ) {
         this.image = image;
         this.position = position;
+        this.scale = scale;
         this.shakeImage = shakeImage;
         this.spriteFrames = spriteFrames;
         this.frameWidth = image.width / spriteFrames;
@@ -53,17 +70,19 @@ class CtxImage {
             x: 1,
             y: 1,
         };
-        this.coin = [-1,1];
+        this.coin = [-1, 1];
         this.init();
     }
-    
-    init(){
+
+    init() {
         this.intervalIDs.push(setInterval(() => this.shakeImageFrame(), 100));
-        this.intervalIDs.push(setInterval(() => this.updateSprite(), 1000 / this.spriteFPS));
+        this.intervalIDs.push(
+            setInterval(() => this.updateSprite(), 1000 / this.spriteFPS)
+        );
     }
 
-    clear(){
-        this.intervalIDs.forEach(x => clearInterval(x));
+    clear() {
+        this.intervalIDs.forEach((x) => clearInterval(x));
     }
 
     draw() {
@@ -74,9 +93,9 @@ class CtxImage {
             sh: this.image.height,
             dx: this.position.x + this.displace.x,
             dy: this.position.y + this.displace.y,
-            dw: this.frameWidth,
-            dh: this.image.height
-        }
+            dw: this.frameWidth * this.scale,
+            dh: this.image.height * this.scale,
+        };
 
         Game.ctx.drawImage(
             this.image,
@@ -91,32 +110,43 @@ class CtxImage {
         );
     }
 
-    updateSprite(){
-        if(this.spriteFrames - 1 == this.currentSprite){
+    updateSprite() {
+        if (this.spriteFrames - 1 == this.currentSprite) {
             this.currentSprite = 0;
-        }else{
+        } else {
             this.currentSprite++;
         }
     }
 
     shakeImageFrame() {
         if (this.shakeImage) {
-            this.displace.x *= this.coin[Math.floor( Math.random() * 2)];
-            this.displace.y *= this.coin[Math.floor( Math.random() * 2)];
+            this.displace.x *= this.coin[Math.floor(Math.random() * 2)];
+            this.displace.y *= this.coin[Math.floor(Math.random() * 2)];
         }
     }
 }
 
-class Ship extends CtxImage{
-    constructor(image, position, shakeImage, spriteFrames, spriteFPS) {
-        super(image, position, shakeImage, spriteFrames, spriteFPS);
+class Alien extends CtxImage {
+    constructor(image, position, shakeImage, spriteFrames, spriteFPS, scale) {
+        super(image, position, shakeImage, spriteFrames, spriteFPS, scale);
+        this.speedX = 16;
+    }
+}
+
+class Ship extends CtxImage {
+    constructor(image, position, shakeImage, spriteFrames, spriteFPS, scale) {
+        super(image, position, shakeImage, spriteFrames, spriteFPS, scale);
         this.speedX = 5;
     }
 
-    updateMovementDirection(){
-        let direction = KeysPressed.ArrowRight ? 1 : KeysPressed.ArrowLeft ? -1 : 0;
+    updateMovementDirection() {
+        let direction = KeysPressed.ArrowRight
+            ? 1
+            : KeysPressed.ArrowLeft
+            ? -1
+            : 0;
         let bounds = this.position.x + this.speedX * direction;
-        if(bounds >= 0 && bounds + this.frameWidth <= WIDTH){
+        if (bounds >= 0 && bounds + this.frameWidth <= WIDTH) {
             this.position.x += this.speedX * direction;
         }
     }
@@ -143,15 +173,15 @@ class Rect {
     }
 }
 
-class Message{
-    constructor(text, position, font, color){
+class Message {
+    constructor(text, position, font, color) {
         this.text = text;
         this.font = font;
         this.color = color;
         this.position = position;
     }
 
-    draw(){
+    draw() {
         Game.ctx.font = this.font;
         Game.ctx.textAlign = "center";
         Game.ctx.fillStyle = this.color;

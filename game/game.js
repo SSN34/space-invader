@@ -36,7 +36,12 @@ Game.init = function (context) {
 };
 
 Game.load = function () {
-    ["images/title.png", "images/ship.png"].forEach((src, i) => {
+    [
+        "images/title.png",
+        "images/ship.png",
+        "images/explosion-6.png",
+        "images/alien.png",
+    ].forEach((src, i) => {
         let image = new Image();
         image.src = src;
 
@@ -91,26 +96,35 @@ Game.createLevels = function () {
         );
     }
 
-    startScene.addObject("message", new Message(
-        "Press ENTER to play",
-        {x : WIDTH / 2, y: HEIGHT/2 + 50},
-        "15px game-font",
-        "white"
-    ))
+    startScene.addObject(
+        "message",
+        new Message(
+            "Press ENTER to play",
+            { x: WIDTH / 2, y: HEIGHT / 2 + 50 },
+            "15px game-font",
+            "white"
+        )
+    );
 
-    startScene.addObject("message", new Message(
-        "Use <- and -> to move, SPACEBAR to fire",
-        {x : WIDTH / 2, y: HEIGHT/2 + 110},
-        "15px game-font",
-        "white"
-    ))
+    startScene.addObject(
+        "message",
+        new Message(
+            "Use ← and → to move, SPACEBAR to fire",
+            { x: WIDTH / 2, y: HEIGHT / 2 + 110 },
+            "15px game-font",
+            "white"
+        )
+    );
 
-    startScene.addObject("message", new Message(
-        "Press ESCAPE to pause",
-        {x : WIDTH / 2, y: HEIGHT/2 + 80},
-        "15px game-font",
-        "white"
-    ))
+    startScene.addObject(
+        "message",
+        new Message(
+            "Press ESCAPE to exit",
+            { x: WIDTH / 2, y: HEIGHT / 2 + 80 },
+            "15px game-font",
+            "white"
+        )
+    );
 
     startScene.update = function () {
         this.objects["star"].forEach((star) => {
@@ -129,8 +143,8 @@ Game.createLevels = function () {
 
     // added stars background
     playScene.objects = {
-        background : startScene.objects["background"],
-        star : startScene.objects["star"], 
+        background: startScene.objects["background"],
+        star: startScene.objects["star"],
     };
 
     playScene.addImage(
@@ -143,12 +157,40 @@ Game.createLevels = function () {
             },
             false,
             3,
-            10
+            10,
+            0.667
         )
     );
     // add some object for life
 
     // add alien objects to this scene
+    let alienField = [
+        [0,0,0,1,1,1,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ]
+    for (let i = 0; i < alienField.length; i++) {
+        for (let j = 0; j < alienField[i].length; j++) {
+            if(alienField[i][j] === 0){
+                continue;
+            }
+            playScene.addImage(
+                "alien",
+                new Alien(
+                    Game.images["alien"],
+                    {
+                        x: (WIDTH / 2 - (Game.images["alien"].width / 2 + 10) * alienField[i].length / 2) + j * (Game.images["alien"].width/2 + 10),
+                        y: i * (Game.images["alien"].height + 10) ,
+                    },
+                    false,
+                    2,
+                    4
+                )
+            );
+        }
+    }
 
     // add spaceship object to the scene
 
@@ -156,7 +198,7 @@ Game.createLevels = function () {
     // this function should also contain logic for collision among the objects
     playScene.update = function () {
         this.objects["star"].forEach((star) => {
-            star.position.y += 1.5;
+            star.position.y += 3;
 
             if (star.position.y > HEIGHT) {
                 star.position.x = Math.random() * WIDTH;
@@ -164,12 +206,12 @@ Game.createLevels = function () {
             }
         });
 
-        this.images["ship"].updateMovementDirection();
+        this.images["ship"][0].updateMovementDirection();
 
         for (let b = this.objects["bullet"]?.length - 1; b >= 0; b--) {
             this.objects["bullet"][b].position.y -= 5;
 
-            if(this.objects["bullet"][b].position.y < 0){
+            if (this.objects["bullet"][b].position.y < 0) {
                 this.objects["bullet"].splice(b, 1);
             }
         }
