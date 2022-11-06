@@ -55,7 +55,8 @@ class CtxImage {
         shakeImage,
         spriteFrames = 1,
         spriteFPS = 10,
-        scale = 1
+        scale = 1,
+        repeat = false
     ) {
         this.image = image;
         this.position = position;
@@ -66,6 +67,11 @@ class CtxImage {
         this.currentSprite = 0;
         this.intervalIDs = [];
         this.spriteFPS = spriteFPS;
+        this.repeat = repeat;
+        this.dim = {
+            width: this.frameWidth,
+            height: image.height,
+        };
         this.displace = {
             x: 1,
             y: 1,
@@ -86,6 +92,10 @@ class CtxImage {
     }
 
     draw() {
+        if (this.repeat && this.spriteFrames - 1 == this.currentSprite) {
+            this.clear();
+            return;
+        }
         let imgattrs = {
             sx: this.frameWidth * this.currentSprite,
             sy: 0,
@@ -153,12 +163,13 @@ class Ship extends CtxImage {
 }
 
 class Rect {
-    constructor(position, l, b, color) {
+    constructor(position, width, height, color) {
         this.position = position;
         this.color = color;
+        this.scale = 1;
         this.dim = {
-            l: l,
-            b: b,
+            width: width,
+            height: height,
         };
     }
 
@@ -167,8 +178,8 @@ class Rect {
         Game.ctx.fillRect(
             this.position.x,
             this.position.y,
-            this.dim.l,
-            this.dim.b
+            this.dim.width,
+            this.dim.height
         );
     }
 }

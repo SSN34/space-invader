@@ -24,6 +24,8 @@ window.addEventListener("load", () => {
         switch (event.key) {
             // start game case
             case "Enter":
+                document.body.style.cursor = "none";
+                Game.audios["welcome"].pause();
                 if (Game.currentScene == "play") {
                     break;
                 }
@@ -32,8 +34,10 @@ window.addEventListener("load", () => {
                 Game.scenes[Game.currentScene].init();
                 window.addEventListener("keydown", addEventListnerForShip);
                 window.addEventListener("keyup", addEventListnerForShipKeyUp);
+                Game.generateBomb();
                 break;
             case "Escape":
+                document.body.style.cursor = "auto";
                 Game.scenes[Game.currentScene].clear();
                 Game.currentScene = "start";
                 Game.scenes[Game.currentScene].init();
@@ -52,12 +56,23 @@ window.addEventListener("load", () => {
                 break;
         }
     });
+
     run();
 });
 
-function run() {
-    Game.drawLevel();
+window.addEventListener("click", () => {
+    Game.audios["welcome"].loop = true;
+    Game.audios["welcome"].play();
+});
 
+
+function run() {
+
+    let stopRunning = Game.drawLevel();
+    if(stopRunning){
+        Game.drawLevel();
+        return;
+    }
     requestAnimationFrame(run);
 }
 
@@ -68,6 +83,7 @@ function addEventListnerForShip(e) {
             if (Game.currentScene == "play" &&  Game.scenes[Game.currentScene].objects["bullet"]?.length >= 5) {
                 break;
             }
+            Game.audios["gun"].cloneNode().play();
             Game.scenes[Game.currentScene].addObject(
                 "bullet",
                 new Rect(
@@ -76,7 +92,7 @@ function addEventListnerForShip(e) {
                             Game.scenes[Game.currentScene].images["ship"][0]
                                 .position.x +
                             Game.scenes[Game.currentScene].images["ship"][0]
-                                .frameWidth /
+                                .frameWidth * Game.scenes[Game.currentScene].images["ship"][0].scale /
                                 2 -
                             1,
                         y: Game.scenes[Game.currentScene].images["ship"][0]
