@@ -43,6 +43,7 @@ Game.load = function () {
         "images/explosion-6.png",
         "images/explosion-1.png",
         "images/alien.png",
+        "images/heart.png",
     ].forEach((src, i) => {
         let image = new Image();
         image.src = src;
@@ -189,14 +190,24 @@ Game.createLevels = function () {
     );
     // add some object for life
     playScene.addObject("life", new Message(
-        ` x ${Game.life}`,
+        `x${Game.life}`,
         {
-            x: WIDTH - 50,
-            y: 100
+            x: WIDTH - 30,
+            y: 30
         },
         "20px game-font",
         "white"
     ))
+
+    playScene.addImage("heart",  new CtxImage(
+        Game.images["heart"],
+        {
+            x: WIDTH - 90,
+            y: 3,
+        },
+        false
+    ));
+
     // add alien objects to this scene
     let alienField = [
         [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
@@ -286,7 +297,7 @@ Game.createLevels = function () {
 
             let collision = false;
             if(hasCollided(this.objects["bomb"][b], this.images["ship"][0])){
-                this.objects["life"][0].text = ` x ${--Game.life}`;
+                this.objects["life"][0].text = `x${--Game.life}`;
                 Game.audios["hit"].cloneNode().play();
                 this.addImage(
                     "explosion",
